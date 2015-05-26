@@ -6,7 +6,7 @@ This package contains the following activities/tasks:
 
 name | description
 --- | ---
-[init](#createClient-activity) | Creates an etcd client
+[createClient](#createClient-activity) | Creates an etcd client
 [lock](#lock-activity) | Creates a distributed lock using etcd
 [unlock](#unlock-activity) | Releases a distributed lock created with the lock activity
 
