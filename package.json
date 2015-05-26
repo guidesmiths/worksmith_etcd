@@ -1,0 +1,30 @@
+{
+  "name": "worksmith_etcd",
+  "version": "0.0.1",
+  "description": "Etcd activites for worksmith",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --recursive tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/guidesmiths/worksmith_etcd.git"
+  },
+  "keywords": [
+    "workflow",
+    "salesforce"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/guidesmiths/worksmith_etcd/issues"
+  },
+  "homepage": "https://github.com/guidesmiths/worksmith_etcd",
+  "dependencies": {
+    "debug": "^2.2.0",
+    "node-etcd": "^4.0.2",
+    "worksmith": "0.0.22"
+  },
+  "devDependencies": {
+    "mocha": "^2.2.5"
+  }
+}
