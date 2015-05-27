@@ -1,16 +1,14 @@
 var worksmith = require('worksmith')
 var lock = require('../')('lock')
-var assert = require('assert')
 var Etcd = require('node-etcd')
 
 describe('lock', function() {
 
     var etcd = new Etcd(['localhost:4001'])
+    var assert = require('./assertions')(etcd)
 
     beforeEach(function(done) {
-        etcd.rmdir('lock/', { recursive: true }, function() {
-            etcd.mkdir('lock', done)
-        })
+        assert.init('lock', done)
     })
 
     it('should error when no etcd client is available in the default location', function(done) {
@@ -19,9 +17,7 @@ describe('lock', function() {
         })
 
         workflow({}, function(err) {
-            assert.ok(err)
-            assert.equal(err.message, 'No etcd client found in context')
-            done()
+            assert.error(err, 'No etcd client found in context', done)
         })
     })
 
@@ -32,9 +28,7 @@ describe('lock', function() {
         })
 
         workflow({}, function(err) {
-            assert.ok(err)
-            assert.equal(err.message, 'No key found in context')
-            done()
+            assert.error(err, 'No key found in context', done)
         })
     })
 
@@ -48,11 +42,7 @@ describe('lock', function() {
 
         workflow({}, function(err) {
             assert.ifError(err)
-            etcd.get('lock/me', function(err, value) {
-                assert.ifError(err)
-                assert.ok(value)
-                done()
-            })
+            assert.locked('lock/me', done)
         })
     })
 
@@ -67,9 +57,7 @@ describe('lock', function() {
         etcd.set('lock/me', this.title, function(err) {
             assert.ifError(err)
             workflow({}, function(err) {
-                assert.ok(err)
-                assert.equal(err.message, 'Key already exists')
-                done()
+                assert.error(err, 'Key already exists', done)
             })
         })
     })
@@ -129,18 +117,11 @@ describe('lock', function() {
             ttl: 1
         })
 
-        var before = new Date().getTime()
-
         workflow({}, function(err) {
             assert.ifError(err)
-            etcd.get('lock/me', function(err, result) {
-                assert.ifError(err)
+            assert.locked('lock/me', function() {
                 setTimeout(function() {
-                    etcd.get('lock/me', function(err, result) {
-                        console.log(result)
-                        assert.ok(err)
-                        done()
-                    })
+                    assert.unlocked('lock/me', done)
                 }, 2000)
             })
         })

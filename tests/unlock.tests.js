@@ -1,16 +1,14 @@
 var worksmith = require('worksmith')
 var unlock = require('../')('unlock')
-var assert = require('assert')
 var Etcd = require('node-etcd')
 
 describe('unlock', function() {
 
     var etcd = new Etcd(['localhost:4001'])
+    var assert = require('./assertions')(etcd)
 
     beforeEach(function(done) {
-        etcd.rmdir('unlock/', { recursive: true }, function() {
-            etcd.mkdir('unlock', done)
-        })
+        assert.init('lock', done)
     })
 
     it('should error when no etcd client is available in the default location', function(done) {
@@ -19,9 +17,7 @@ describe('unlock', function() {
         })
 
         workflow({}, function(err) {
-            assert.ok(err)
-            assert.equal(err.message, 'No etcd client found in context')
-            done()
+            assert.error(err, 'No etcd client found in context', done)
         })
     })
 
@@ -32,9 +28,7 @@ describe('unlock', function() {
         })
 
         workflow({}, function(err) {
-            assert.ok(err)
-            assert.equal(err.message, 'No key found in context')
-            done()
+            assert.error(err, 'No key found in context', done)
         })
     })
 
@@ -43,18 +37,14 @@ describe('unlock', function() {
         var workflow = worksmith({
             task: unlock,
             etcd: etcd,
-            key: 'unlock/me'
+            key: 'lock/me'
         })
 
-        etcd.set('unlock/me', this.title, function(err) {
+        etcd.set('lock/me', this.title, function(err) {
             assert.ifError(err)
             workflow({}, function(err) {
                 assert.ifError(err)
-                etcd.get('unlock/me', function(err, result) {
-                    assert.ok(err)
-                    assert.equal(err.message, 'Key not found')
-                    done()
-                })
+                assert.unlocked('lock/me', done)
             })
         })
     })
@@ -64,16 +54,12 @@ describe('unlock', function() {
         var workflow = worksmith({
             task: unlock,
             etcd: etcd,
-            key: 'unlock/me'
+            key: 'lock/me'
         })
 
         workflow({}, function(err) {
             assert.ifError(err)
-            etcd.get('unlock/me', function(err, result) {
-                assert.ok(err)
-                assert.equal(err.message, 'Key not found')
-                done()
-            })
+            assert.unlocked('lock/me', done)
         })
     })
 
@@ -82,19 +68,14 @@ describe('unlock', function() {
         var workflow = worksmith({
             task: unlock,
             etcd: etcd,
-            key: 'unlock/me',
+            key: 'lock/me',
             value: 'wrong'
         })
 
-        etcd.set('unlock/me', this.title, function(err) {
+        etcd.set('lock/me', this.title, function(err) {
             assert.ifError(err)
             workflow({}, function(err) {
-                assert.ok(err)
-                assert.equal(err.message, 'Compare failed')
-                etcd.get('unlock/me', function(err, result) {
-                    assert.ifError(err)
-                    done()
-                })
+                assert.error(err, 'Compare failed', done)
             })
         })
     })
