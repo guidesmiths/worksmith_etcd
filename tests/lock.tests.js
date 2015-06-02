@@ -1,6 +1,7 @@
 var worksmith = require('worksmith')
 var lock = require('../')('lock')
 var Etcd = require('node-etcd')
+var format = require('util').format
 
 describe('lock', function() {
 
@@ -62,7 +63,7 @@ describe('lock', function() {
         })
     })
 
-    it('should default the lock value to the current time in millis', function(done) {
+    it('should default the lock value to a uuid', function(done) {
 
         var workflow = worksmith({
             task: lock,
@@ -70,15 +71,12 @@ describe('lock', function() {
             key: 'lock/me'
         })
 
-        var before = new Date().getTime()
-
         workflow({}, function(err) {
             assert.ifError(err)
             etcd.get('lock/me', function(err, result) {
                 assert.ifError(err)
                 assert.ok(result.node.value)
-                assert.ok(result.node.value >= before)
-                assert.ok(result.node.value <= before + 1000)
+                assert.ok(/\w+-\w+-\w+-\w+-\w+/.test(result.node.value), format('%s failed to match expected pattern', result.node.value))
                 done()
             })
         })

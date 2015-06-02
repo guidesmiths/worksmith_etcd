@@ -1,4 +1,5 @@
 var debug = require('debug')('worksmith:tasks:etcd:lock')
+var uuid = require('node-uuid').v4
 
 module.exports = function(definition) {
     return function(context) {
@@ -6,7 +7,7 @@ module.exports = function(definition) {
         function execute(done) {
             var etcd = context.get(definition.etcd) || context.etcd
             var key = context.get(definition.key)
-            var value = context.get(definition.value) || new Date().getTime()
+            var value = context.get(definition.value) || uuid()
             var ttl = context.get(definition.ttl)
 
             if (!etcd) return done(new Error('No etcd client found in context'))

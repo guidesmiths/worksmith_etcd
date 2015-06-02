@@ -23,6 +23,7 @@
   "dependencies": {
     "debug": "^2.2.0",
     "node-etcd": "^4.0.2",
+    "node-uuid": "^1.4.3",
     "worksmith": "0.0.22"
   },
   "devDependencies": {

@@ -36,7 +36,7 @@ name | type | description
 --- | --- | ---
 etcd | etcd client | The etcd client (if not specified expected to be in the context 'etcd' property)
 key | string | The etcd key to be used in the lock
-value | string | Optional value for the lock, defaults to ```new Date().getTime()```
+value | string | Optional value for the lock, defaults to a uuid
 ttl | integer | Optional time in secords before the lock automatically expires
 
 ##### example
