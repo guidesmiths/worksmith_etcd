@@ -12,24 +12,24 @@ describe('lock', function() {
         assert.init('lock', done)
     })
 
-    it('should error when no etcd client is available in the default location', function(done) {
+    it('should error when no etcd client is available in the context', function(done) {
         var workflow = worksmith({
             task: lock
         })
 
         workflow({}, function(err) {
-            assert.error(err, 'No etcd client found in context', done)
+            assert.error(err, 'No etcd client specified or found in context', done)
         })
     })
 
-    it('should error when no key is available', function(done) {
+    it('should error when no key is specified', function(done) {
         var workflow = worksmith({
             task: lock,
             etcd: {}
         })
 
         workflow({}, function(err) {
-            assert.error(err, 'No key found in context', done)
+            assert.error(err, 'No key specified', done)
         })
     })
 
