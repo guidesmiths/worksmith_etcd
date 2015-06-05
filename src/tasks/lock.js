@@ -4,9 +4,9 @@ var uuid = require('node-uuid').v4
 module.exports = function(definition) {
     return function(context) {
 
-        execute.inject = ['etcd', 'key', 'value', 'ttl', 'errorOnFail']
+        execute.inject = ['etcd', 'key', 'value', 'ttl']
 
-        function execute(etcd, key, value, ttl, errorOnFail, done) {
+        function execute(etcd, key, value, ttl, done) {
             etcd = etcd || context.etcd
             value = value || uuid()
 
@@ -15,9 +15,9 @@ module.exports = function(definition) {
 
             debug('Setting key: %s to value: %s with ttl: %d', key, value, ttl)
             etcd.set(key, value, { prevExist: false, ttl: ttl }, function(err) {
-                done(err, value)
+                return err ? done(err) : done(null, { key: key, value: value })
             })
         }
-        return execute;
+        return execute
     }
 }

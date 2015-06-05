@@ -17,7 +17,7 @@ describe('unlock', function() {
         })
 
         workflow({}, function(err) {
-            assert.error(err, 'No etcd client found in context', done)
+            assert.error(err, 'No etcd client specified or found in context', done)
         })
     })
 
@@ -28,7 +28,7 @@ describe('unlock', function() {
         })
 
         workflow({}, function(err) {
-            assert.error(err, 'No key found in context', done)
+            assert.error(err, 'No key specified', done)
         })
     })
 
@@ -49,7 +49,7 @@ describe('unlock', function() {
         })
     })
 
-    it('should tollerate releasing a non existent lock', function(done) {
+    it('should tolerate releasing a non existent lock', function(done) {
 
         var workflow = worksmith({
             task: unlock,

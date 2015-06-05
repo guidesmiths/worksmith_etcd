@@ -91,8 +91,6 @@ describe('lock', function() {
             value: 'foo'
         })
 
-        var before = new Date().getTime()
-
         workflow({}, function(err) {
             assert.ifError(err)
             etcd.get('lock/me', function(err, result) {
@@ -122,6 +120,26 @@ describe('lock', function() {
                     assert.unlocked('lock/me', done)
                 }, 2000)
             })
+        })
+    })
+
+    it('should return the key and value', function(done) {
+
+        var workflow = worksmith({
+            task: lock,
+            etcd: etcd,
+            key: 'lock/me',
+            value: 'foo',
+            resultTo: 'lock'
+        })
+
+        var ctx = {}
+
+        workflow(ctx, function(err) {
+            assert.ifError(err)
+            assert.equal(ctx.lock.key, 'lock/me')
+            assert.equal(ctx.lock.value, 'foo')
+            done()
         })
     })
 

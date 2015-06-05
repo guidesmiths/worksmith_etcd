@@ -3,13 +3,13 @@ var debug = require('debug')('worksmith:tasks:etcd:unlock')
 module.exports = function(definition) {
     return function(context) {
 
-        function execute(done) {
-            var etcd = context.get(definition.etcd) || context.etcd
-            var key = context.get(definition.key)
-            var value = context.get(definition.value)
+        execute.inject = ['etcd', 'key', 'value']
 
-            if (!etcd) return done(new Error('No etcd client found in context'))
-            if (!key) return done(new Error('No key found in context'))
+        function execute(etcd, key, value, done) {
+            etcd = etcd || context.etcd
+
+            if (!etcd) return done(new Error('No etcd client specified or found in context'))
+            if (!key) return done(new Error('No key specified'))
 
             debug('Deleting key: %s with value: %s', key, value ? value : '<anything>')
             etcd.del(key, { prevValue: value }, function(err) {
