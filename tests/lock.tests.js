@@ -143,4 +143,27 @@ describe('lock', function() {
         })
     })
 
+
+    it('should supress errors when the lock is already taken and errorOnExists is false', function(done) {
+
+        var workflow = worksmith({
+            task: lock,
+            etcd: etcd,
+            key: 'lock/me',
+            errorOnExists: false,
+            resultTo: 'lock'
+        })
+
+        var ctx = {}
+
+        etcd.set('lock/me', this.title, function(err) {
+            assert.ifError(err)
+            workflow(ctx, function(err) {
+                assert.ifError(err)
+                assert.ok(!ctx.lock)
+                done()
+            })
+        })
+    })
+
 })
