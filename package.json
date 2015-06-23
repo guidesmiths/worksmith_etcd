@@ -1,6 +1,6 @@
 {
   "name": "worksmith_etcd",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Etcd activites for worksmith",
   "main": "index.js",
   "scripts": {
