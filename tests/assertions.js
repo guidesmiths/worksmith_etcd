@@ -11,7 +11,7 @@ module.exports = function(etcd, _assert) {
     assert.locked = function(key, next) {
         etcd.get(key, function(err, result) {
             assert.ifError(err)
-            assert.ok(result)
+            assert.ok(result, 'Was not locked')
             next()
         })
     }

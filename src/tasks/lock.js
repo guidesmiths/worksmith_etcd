@@ -18,7 +18,7 @@ module.exports = function(definition) {
             etcd.set(key, value, { prevExist: false, ttl: ttl }, function(err) {
                 if (err && err.errorCode === 105 && !errorOnExists) return done()
                 if (err) return done(err)
-                done(null, { key: key, value: value })
+                done(null, { key: key, value: value, ttl: ttl })
             })
         }
         return execute

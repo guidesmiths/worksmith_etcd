@@ -24,7 +24,7 @@
     "debug": "^2.2.0",
     "node-etcd": "^4.0.2",
     "node-uuid": "^1.4.3",
-    "worksmith": "^0.1.0"
+    "worksmith": "^0.1.8"
   },
   "devDependencies": {
     "husky": "^0.8.1",

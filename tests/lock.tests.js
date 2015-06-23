@@ -63,6 +63,8 @@ describe('lock', function() {
         })
     })
 
+
+
     it('should default the lock value to a uuid', function(done) {
 
         var workflow = worksmith({
@@ -130,6 +132,7 @@ describe('lock', function() {
             etcd: etcd,
             key: 'lock/me',
             value: 'foo',
+            ttl: 1,
             resultTo: 'lock'
         })
 
@@ -139,6 +142,7 @@ describe('lock', function() {
             assert.ifError(err)
             assert.equal(ctx.lock.key, 'lock/me')
             assert.equal(ctx.lock.value, 'foo')
+            assert.equal(ctx.lock.ttl, 1)
             done()
         })
     })
